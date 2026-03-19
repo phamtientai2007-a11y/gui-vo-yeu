@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Gửi Vân Anh Của Tài</title>
+    <style>
+        body {
+            background-color: #ffe6e6; margin: 0; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden;
+        }
+
+        /* Khu vực dành cho BẠN soạn thư (Sẽ ẩn đi khi gửi cho cô ấy) */
+        #admin-writer {
+            position: fixed; top: 10px; left: 10px; z-index: 1000;
+            background: white; padding: 15px; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 250px;
+        }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; border: 1px solid #ffb3d9; }
+
+        /* Khung xin lỗi chính */
+        #box-xin-loi {
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.2);
+            text-align: center; z-index: 100; transition: 0.8s;
+        }
+
+        h1 { color: #ff4d94; }
+        .btn-main {
+            background: #ff4d94; color: white; border: none;
+            padding: 15px 30px; font-size: 18px; border-radius: 50px;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        /* Trái tim ảnh */
+        #heart-gallery {
+            position: absolute; width: 100%; height: 100%;
+            display: none; justify-content: center; align-items: center;
+        }
+        .photo {
+            position: absolute; width: 130px; height: 130px;
+            object-fit: cover; border: 4px solid white;
+            border-radius: 15px; opacity: 0; transition: all 1.5s ease-in-out;
+        }
+
+        /* Modal bức thư */
+        #letter-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none;
+            align-items: center; justify-content: center; z-index: 500;
+        }
+        .letter-content {
+            background: #fffafa; padding: 30px; width: 80%; max-width: 450px;
+            border-radius: 20px; border: 2px dashed #ff4d94;
+            transform: scale(0.7); transition: 0.5s; text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="admin-writer">
+        <strong style="color: #ff4d94;">Viết thư vào đây:</strong>
+        <textarea id="input-thu" placeholder="Nhập lời xin lỗi chân thành nhất..."></textarea>
+        <button onclick="luuThu()" style="cursor:pointer">Lưu nội dung thư</button>
+        <p style="font-size: 10px; color: gray;">(Sau khi Lưu, hãy ấn F5 để kiểm tra thử)</p>
+    </div>
+
+    <div id="box-xin-loi">
+        <h1>Tớ biết lỗi rui 🥺</h1>
+        <p>Tớ có điều này muốn nói vứi cậu...</p>
+        <button class="btn-main" onclick="thaLoi()">anvaolahetgian ❤️</button>
+    </div>
+
+    <div id="heart-gallery">
+        <div id="btn-open-letter" style="display:none; opacity:0; z-index:200;">
+            <button class="btn-main" style="background: #ff85a2;" onclick="showLetter()">Mở thư Tài viết ✉️</button>
+        </div>
+        <img src="anh1.jpg" class="photo"><img src="anh2.jpg" class="photo">
+        <img src="anh3.jpg" class="photo"><img src="anh4.jpg" class="photo">
+        <img src="anh5.jpg" class="photo"><img src="anh6.jpg" class="photo">
+        <img src="anh7.jpg" class="photo"><img src="anh8.jpg" class="photo">
+    </div>
+
+    <div id="letter-modal">
+        <div class="letter-content" id="modal-inside">
+            <h2 style="color: #ff4d94; text-align: center;">Gửi Vợ xinh...</h2>
+            <div id="hien-thi-thu" style="white-space: pre-line; font-size: 18px; color: #444;"></div>
+            <br>
+            <button class="btn-main" style="width:100%" onclick="closeLetter()">Đóng thư x</button>
+        </div>
+    </div>
+
+    <script>
+        // Lưu thư vào bộ nhớ trình duyệt (LocalStorage)
+        function luuThu() {
+            const content = document.getElementById('input-thu').value;
+            localStorage.setItem('thu_xin_loi', content);
+            alert('Đã lưu thư thành công!');
+        }
+
+        // Khi load trang, kiểm tra xem có thư cũ không
+        window.onload = function() {
+            const thuCu = localStorage.getItem('thu_xin_loi');
+            if(thuCu) {
+                document.getElementById('input-thu').value = thuCu;
+                document.getElementById('hien-thi-thu').innerText = thuCu;
+            }
+        };
+
+        function thaLoi() {
+            document.getElementById('admin-writer').style.display = 'none'; // Ẩn trình soạn thảo
+            document.getElementById('box-xin-loi').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('box-xin-loi').style.display = 'none';
+                document.getElementById('heart-gallery').style.display = 'flex';
+                sapXepTraiTim();
+            }, 800);
+        }
+
+        function sapXepTraiTim() {
+            const photos = document.querySelectorAll('.photo');
+            const total = photos.length;
+            photos.forEach((img, i) => {
+                let t = (i / total) * 2 * Math.PI;
+                let x = 16 * Math.pow(Math.sin(t), 3);
+                let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                x *= 18; y *= 18;
+                setTimeout(() => {
+                    img.style.opacity = '1';
+                    img.style.transform = `translate(${x}px, ${y}px)`;
+                }, i * 200);
+            });
+            setTimeout(() => {
+                const btn = document.getElementById('btn-open-letter');
+                btn.style.display = 'block';
+                setTimeout(() => { btn.style.opacity = '1'; }, 50);
+            }, (total * 200) + 1000);
+        }
+
+        function showLetter() {
+            document.getElementById('letter-modal').style.display = 'flex';
+            setTimeout(() => { document.getElementById('modal-inside').style.transform = 'scale(1)'; }, 50);
+        }
+
+        function closeLetter() {
+            document.getElementById('modal-inside').style.transform = 'scale(0.7)';
+            setTimeout(() => { document.getElementById('letter-modal').style.display = 'none'; }, 400);
+        }
+    </script>
+</body>
+</html>
